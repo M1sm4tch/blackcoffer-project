@@ -6,12 +6,13 @@ from reports.models import DataModel
 from .serializers import DataModelSerializer
 from rest_framework import status
 from rest_framework.views import APIView
+from django.views.decorators.csrf import csrf_exempt
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 class BulkDataModelCreateView(APIView):
     def post(self, request, *args, **kwargs):
         data = request.data
         serializer = DataModelSerializer(data=data, many=True)
-
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -20,9 +21,7 @@ class BulkDataModelCreateView(APIView):
 @api_view(['GET'])
 def getData(request):
     data = DataModel.objects.all()
-    print(data)
     serializer = DataModelSerializer(data, many=True)
-    print(serializer.data)
     return Response(serializer.data)
 
 @api_view(['POST'])
@@ -31,3 +30,11 @@ def postdata(request):
     if serializer.is_valid():
         serializer.save()
     return Response(serializer.data)
+
+@csrf_exempt
+@api_view(['GET'])
+def getjsondata(request):
+    data = DataModel.objects.all()
+    serializer = DataModelSerializer(data, many=True)
+    return JsonResponse(serializer.data,safe=False) 
+

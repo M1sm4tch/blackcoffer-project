@@ -5,4 +5,5 @@ urlpatterns = [
     path('',views.getData),
     path('add',views.postdata),
     path('bulk-data/', views.BulkDataModelCreateView.as_view(), name='bulk-data-create'),
+    path('getjson',views.getjsondata,name='json'),
 ]
